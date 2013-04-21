@@ -58,7 +58,7 @@ module Polyamorous
         unless reflection.options[:polymorphic]
           association
         else
-          association if association.active_record == klass
+          association if association.base_klass == klass
         end
       end
     end

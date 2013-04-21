@@ -35,7 +35,7 @@ module Polyamorous
     end
 
     def equality_with_polymorphism(other)
-      equality_without_polymorphism(other) && active_record == other.active_record
+      equality_without_polymorphism(other) && base_klass == other.base_klass
     end
 
     def build_constraint_with_polymorphism(reflection, table, key, foreign_table, foreign_key)
@@ -60,7 +60,7 @@ module Polyamorous
 
         parent_table = Arel::Table.new(parent.table_name, :as      => parent.aliased_table_name,
                                                           :engine  => arel_engine,
-                                                          :columns => parent.active_record.columns)
+                                                          :columns => parent.base_klass.columns)
 
         @join << parent_table[reflection.options[:foreign_type]].eq(reflection.klass.name)
       end
