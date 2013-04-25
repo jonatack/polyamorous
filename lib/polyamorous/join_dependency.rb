@@ -5,6 +5,9 @@ module Polyamorous
       base.class_eval do
         alias_method_chain :build, :polymorphism
         alias_method_chain :graft, :polymorphism
+        if base.method_defined?(:active_record)
+          alias_method :base_klass, :active_record
+        end
       end
     end
 

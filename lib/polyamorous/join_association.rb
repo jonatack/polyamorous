@@ -6,6 +6,9 @@ module Polyamorous
         alias_method_chain :initialize, :polymorphism
         alias_method :equality_without_polymorphism, :==
         alias_method :==, :equality_with_polymorphism
+        if base.method_defined?(:active_record)
+          alias_method :base_klass, :active_record
+        end
 
         if ActiveRecord::VERSION::STRING =~ /^3\.0\./
           alias_method_chain :association_join, :polymorphism
