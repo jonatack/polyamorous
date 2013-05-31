@@ -35,10 +35,9 @@ module Polyamorous
       end
     end
 
-    def build_with_polymorphism(associations, parent = nil, join_type = Arel::InnerJoin)
+    def build_with_polymorphism(associations, parent = _join_parts.last, join_type = Arel::InnerJoin)
       case associations
       when Join
-        parent ||= _join_parts.last
         reflection = parent.reflections[associations.name] or
           raise ::ActiveRecord::ConfigurationError, "Association named '#{ associations.name }' was not found; perhaps you misspelled it?"
 
