@@ -13,12 +13,14 @@ module Polyamorous
 
     def graft_with_polymorphism(*associations)
       associations.each do |association|
-        unless join_associations.detect {|a| association == a}
+        unless join_associations.detect { |a| association == a }
           if association.reflection.options[:polymorphic]
-            build(Join.new(association.reflection.name, association.join_type, association.reflection.klass),
+            build(Join.new(association.reflection.name, association.join_type,
+                           association.reflection.klass),
                   association.find_parent_in(self) || join_base, association.join_type)
           else
-            build(association.reflection.name, association.find_parent_in(self) || join_base, association.join_type)
+            build(association.reflection.name,
+              association.find_parent_in(self) || join_base, association.join_type)
           end
         end
       end
@@ -39,16 +41,20 @@ module Polyamorous
       case associations
       when Join
         reflection = parent.reflections[associations.name] or
-          raise ::ActiveRecord::ConfigurationError, "Association named '#{ associations.name }' was not found; perhaps you misspelled it?"
-
-        unless join_association = find_join_association_respecting_polymorphism(reflection, parent, associations.klass)
+          raise ::ActiveRecord::ConfigurationError,
+            "Association named '#{ associations.name }' was not found on #{
+              parent.base_klass.name }; perhaps you misspelled it?"
+        unless join_association = find_join_association_respecting_polymorphism(
+          reflection, parent, associations.klass
+          )
           @reflections << reflection
-          join_association = build_join_association_respecting_polymorphism(reflection, parent, associations.klass)
+          join_association = build_join_association_respecting_polymorphism(
+            reflection, parent, associations.klass
+            )
           join_association.join_type = associations.type
           _join_parts << join_association
           cache_joined_association(join_association)
         end
-
         join_association
       else
         build_without_polymorphism(associations, parent, join_type)
