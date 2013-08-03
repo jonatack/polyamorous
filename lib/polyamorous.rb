@@ -5,11 +5,11 @@ module Polyamorous
   if defined?(::ActiveRecord::Associations::JoinDependency)
     JoinDependency  = ::ActiveRecord::Associations::JoinDependency
     JoinAssociation = ::ActiveRecord::Associations::JoinDependency::JoinAssociation
-    JoinBase = ::ActiveRecord::Associations::JoinDependency::JoinBase
+    JoinBase        = ::ActiveRecord::Associations::JoinDependency::JoinBase
   else
     JoinDependency  = ::ActiveRecord::Associations::ClassMethods::JoinDependency
     JoinAssociation = ::ActiveRecord::Associations::ClassMethods::JoinDependency::JoinAssociation
-    JoinBase = ::ActiveRecord::Associations::ClassMethods::JoinDependency::JoinBase
+    JoinBase        = ::ActiveRecord::Associations::ClassMethods::JoinDependency::JoinBase
   end
 end
 
