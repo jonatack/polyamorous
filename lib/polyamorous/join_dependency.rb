@@ -5,9 +5,6 @@ module Polyamorous
       base.class_eval do
         alias_method_chain :build, :polymorphism
         alias_method_chain :graft, :polymorphism
-        if base.method_defined?(:active_record)
-          alias_method :base_klass, :active_record
-        end
       end
     end
 
@@ -27,14 +24,8 @@ module Polyamorous
       self
     end
 
-    if ActiveRecord::VERSION::STRING =~ /^3\.0\./
-      def _join_parts
-        @joins
-      end
-    else
-      def _join_parts
-        @join_parts
-      end
+    def _join_parts
+      @join_parts
     end
 
     def build_with_polymorphism(associations, parent = _join_parts.last, join_type = Arel::InnerJoin)
