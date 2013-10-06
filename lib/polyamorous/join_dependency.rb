@@ -12,12 +12,15 @@ module Polyamorous
       associations.each do |association|
         unless join_associations.detect { |a| association == a }
           if association.reflection.options[:polymorphic]
-            build(Join.new(association.reflection.name, association.join_type,
+            build(Join.new(association.reflection.name,
+                           association.join_type,
                            association.reflection.klass),
-                  association.find_parent_in(self) || join_base, association.join_type)
+                  association.find_parent_in(self) || join_base,
+                  association.join_type)
           else
             build(association.reflection.name,
-              association.find_parent_in(self) || join_base, association.join_type)
+                  association.find_parent_in(self) || join_base,
+                  association.join_type)
           end
         end
       end
@@ -28,7 +31,7 @@ module Polyamorous
       @join_parts
     end
 
-    def build_with_polymorphism(associations, parent = _join_parts.last, join_type = Arel::InnerJoin)
+    def build_with_polymorphism(associations, parent, join_type)
       case associations
       when Join
         reflection = parent.reflections[associations.name] or
@@ -40,9 +43,8 @@ module Polyamorous
           )
           @reflections << reflection
           join_association = build_join_association_respecting_polymorphism(
-            reflection, parent, associations.klass
+            reflection, parent, join_type, associations.klass
             )
-          join_association.join_type = associations.type
           _join_parts << join_association
           cache_joined_association(join_association)
         end
@@ -52,7 +54,8 @@ module Polyamorous
       end
     end
 
-    def find_join_association_respecting_polymorphism(reflection, parent, klass)
+    def find_join_association_respecting_polymorphism(reflection, parent,
+      klass)
       if association = find_join_association(reflection, parent)
         unless reflection.options[:polymorphic]
           association
@@ -62,11 +65,12 @@ module Polyamorous
       end
     end
 
-    def build_join_association_respecting_polymorphism(reflection, parent, klass)
+    def build_join_association_respecting_polymorphism(reflection, parent,
+      join_type, klass)
       if reflection.options[:polymorphic] && klass
-        JoinAssociation.new(reflection, self, parent, klass)
+        JoinAssociation.new(reflection, self, parent, join_type, klass)
       else
-        JoinAssociation.new(reflection, self, parent)
+        JoinAssociation.new(reflection, self, parent, join_type)
       end
     end
 

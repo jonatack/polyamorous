@@ -10,14 +10,19 @@ module Polyamorous
       end
     end
 
-    def initialize_with_polymorphism(reflection, join_dependency, parent = nil, polymorphic_class = nil)
+    def initialize_with_polymorphism(reflection, join_dependency, parent,
+      join_type, polymorphic_class = nil)
       if polymorphic_class && ::ActiveRecord::Base > polymorphic_class
         swapping_reflection_klass(reflection, polymorphic_class) do |reflection|
-          initialize_without_polymorphism(reflection, join_dependency, parent)
+          initialize_without_polymorphism(
+            reflection, join_dependency, parent, join_type
+          )
           self.reflection.options[:polymorphic] = true
         end
       else
-        initialize_without_polymorphism(reflection, join_dependency, parent)
+        initialize_without_polymorphism(
+          reflection, join_dependency, parent, join_type
+        )
       end
     end
 
@@ -33,14 +38,19 @@ module Polyamorous
       equality_without_polymorphism(other) && base_klass == other.base_klass
     end
 
-    def build_constraint_with_polymorphism(klass, table, key, foreign_table, foreign_key)
+    def build_constraint_with_polymorphism(klass, table, key, foreign_table,
+      foreign_key)
       if @reflection.options[:polymorphic]
-        build_constraint_without_polymorphism(klass, table, key, foreign_table, foreign_key).
-        and(foreign_table[@reflection.foreign_type].
-        eq(klass.name)
+        build_constraint_without_polymorphism(
+          klass, table, key, foreign_table, foreign_key
+        ).
+        and(
+          foreign_table[@reflection.foreign_type].eq(klass.name)
         )
       else
-        build_constraint_without_polymorphism(klass, table, key, foreign_table, foreign_key)
+        build_constraint_without_polymorphism(
+          klass, table, key, foreign_table, foreign_key
+        )
       end
     end
 

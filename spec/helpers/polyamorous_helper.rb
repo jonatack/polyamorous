@@ -5,7 +5,7 @@ module PolyamorousHelper
   end
 
   def new_join(name, type = Arel::InnerJoin, klass = nil)
-    Polyamorous::Join.new name, type, klass
+    Polyamorous::Join.new(name, type, klass)
   end
 
 end
